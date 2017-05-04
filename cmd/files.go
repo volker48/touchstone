@@ -4,7 +4,6 @@ import (
 	"os"
 	"log"
 	"bufio"
-	"github.com/volker48/touchstone/metrics"
 	"strconv"
 )
 
@@ -21,7 +20,6 @@ func readFiles(args []string, f func(int64, int64)) {
 	yScanner := bufio.NewScanner(bufio.NewReader(yFile))
 
 	yHatScanner := bufio.NewScanner(bufio.NewReader(yHatFile))
-	cm := &metrics.ConfusionMatrix{}
 	for {
 		yScan := yScanner.Scan()
 		if !yScan {
@@ -50,6 +48,5 @@ func readFiles(args []string, f func(int64, int64)) {
 			log.Fatal("Error parsing int", err)
 		}
 		f(y, yHat)
-		cm.Update(y, yHat)
 	}
 }
