@@ -15,17 +15,15 @@
 package cmd
 
 import (
-	"github.com/volker48/touchstone/metrics"
+	"fmt"
+
 	"github.com/spf13/cobra"
-	"log"
 )
 
-
-
-// f1Cmd represents the f1 command
-var f1Cmd = &cobra.Command{
-	Use:   "f1",
-	Short: "Calculates F1 score",
+// mccCmd represents the mcc command
+var mccCmd = &cobra.Command{
+	Use:   "mcc",
+	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -33,25 +31,22 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		cm := &metrics.ConfusionMatrix{}
-		readFiles(args, cm.Update)
-		log.Printf("Total samples: %d", cm.Total)
-		log.Printf("Confusion Matrix TP: %f, FP: %f, TN: %f, FN: %f", cm.TP, cm.FP, cm.TN, cm.FN)
-		log.Printf("F1 score: %f", cm.F1Score())
+		// TODO: Work your own magic here
+		fmt.Println("mcc called")
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(f1Cmd)
+	RootCmd.AddCommand(mccCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// f1Cmd.PersistentFlags().String("foo", "", "A help for foo")
+	// mccCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// f1Cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// mccCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 }
