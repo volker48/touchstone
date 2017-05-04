@@ -1,2 +1,9 @@
 package: github.com/volker48/touchstone
-import: []
+import:
+- package: github.com/spf13/cobra
+- package: github.com/spf13/viper
+testImport:
+- package: github.com/stretchr/testify
+  version: ^1.1.4
+  subpackages:
+  - assert
