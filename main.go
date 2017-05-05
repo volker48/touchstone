@@ -1,4 +1,4 @@
-// Copyright © 2017 Marcus McCudy <marcus.mccurdy@gmail.com>
+// Copyright © 2017 Marcus McCurdy <marcus.mccurdy@gmail.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.

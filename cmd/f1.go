@@ -46,6 +46,8 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			log.Fatal("You must provide a value with preidctions")
 		}
+		defer yFile.Close()
+		defer yHatFile.Close()
 
 		yScanner := bufio.NewScanner(bufio.NewReader(yFile))
 
