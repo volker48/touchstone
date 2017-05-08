@@ -15,13 +15,9 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/volker48/touchstone/metrics"
 	"github.com/spf13/cobra"
-	"os"
 	"log"
-	"bufio"
-	"strconv"
 )
 
 
@@ -30,58 +26,11 @@ import (
 var f1Cmd = &cobra.Command{
 	Use:   "f1",
 	Short: "Calculates F1 score",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `Example usage:
+	./touchstone f1 y.txt yHat.txt`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("f1 called")
-		yFile, err := os.Open(args[0])
-		if err != nil {
-			log.Fatal("You must provide a file for actual values")
-		}
-		yHatFile, err := os.Open(args[1])
-		if err != nil {
-			log.Fatal("You must provide a value with preidctions")
-		}
-		defer yFile.Close()
-		defer yHatFile.Close()
-
-		yScanner := bufio.NewScanner(bufio.NewReader(yFile))
-
-		yHatScanner := bufio.NewScanner(bufio.NewReader(yHatFile))
 		cm := &metrics.ConfusionMatrix{}
-		for {
-			yScan := yScanner.Scan()
-			if !yScan {
-				if yScanner.Err() != nil {
-					log.Fatal("Scanner error", yScanner.Err())
-				}
-				break
-			}
-			yHatScan := yHatScanner.Scan()
-			if !yHatScan {
-				if yHatScanner.Err() != nil {
-					log.Fatal("Scanner error", yHatScanner.Err())
-				}
-				break
-
-			}
-
-			yText := yScanner.Text()
-			yHatText := yHatScanner.Text()
-			y, err := strconv.ParseInt(yText, 10, 8)
-			if err != nil {
-				log.Fatal("Error parsing int", err)
-			}
-			yHat, err := strconv.ParseInt(yHatText, 10, 8)
-			if err != nil {
-				log.Fatal("Error parsing int", err)
-			}
-			cm.Update(y, yHat)
-		}
+		readFiles(args, cm.Update)
 		log.Printf("Total samples: %d", cm.Total)
 		log.Printf("Confusion Matrix TP: %f, FP: %f, TN: %f, FN: %f", cm.TP, cm.FP, cm.TN, cm.FN)
 		log.Printf("F1 score: %f", cm.F1Score())
