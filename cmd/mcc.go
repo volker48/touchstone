@@ -36,10 +36,7 @@ var mccCmd = &cobra.Command{
 	−1 indicates total disagreement between prediction and observation.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cm := &metrics.ConfusionMatrix{}
-		update := func(y, yHat int64) {
-			cm.Update(y, yHat)
-		}
-		readFiles(args, update)
+		readFiles(args, cm.Update)
 		log.Printf("Total samples: %d", cm.Total)
 		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d",
 			int(cm.TP), int(cm.FP), int(cm.TN), int(cm.FN))
