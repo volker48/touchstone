@@ -15,24 +15,35 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/volker48/touchstone/metrics"
+	"log"
 )
 
 // mccCmd represents the mcc command
 var mccCmd = &cobra.Command{
 	Use:   "mcc",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Calculates Matthews correlation coefficient",
+	Long: `The Matthews correlation coefficient is used in machine learning as a measure of the quality of binary
+	(two-class) classifications. It takes into account true and false positives and negatives and is generally
+	regarded as a balanced measure which can be used even if the classes are of very different sizes. The MCC is
+	in essence a correlation coefficient between the observed and predicted binary classifications; it returns a
+	value between −1 and +1.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	A coefficient of:
+	+1 represents a perfect prediction,
+	 0 no better than random prediction and
+	−1 indicates total disagreement between prediction and observation.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		fmt.Println("mcc called")
+		cm := &metrics.ConfusionMatrix{}
+		update := func(y, yHat int64) {
+			cm.Update(y, yHat)
+		}
+		readFiles(args, update)
+		log.Printf("Total samples: %d", cm.Total)
+		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d",
+			int(cm.TP), int(cm.FP), int(cm.TN), int(cm.FN))
+		log.Printf("Matthews correlation coefficient: %f", cm.MCC())
 	},
 }
 

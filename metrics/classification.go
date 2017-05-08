@@ -14,6 +14,8 @@
 
 package metrics
 
+import "math"
+
 type ConfusionMatrix struct {
 	TP    float64
 	FP    float64
@@ -62,4 +64,12 @@ func (cm *ConfusionMatrix) Precision() float64 {
 
 func (cm *ConfusionMatrix) Recall() float64 {
 	return cm.TP / (cm.TP + cm.FN)
+}
+func (cm *ConfusionMatrix) MCC() float64 {
+	denom := (cm.TP + cm.FP) * (cm.TP + cm.FN) * (cm.TN + cm.FP) * (cm.TN + cm.FN)
+	if denom == 0.0 {
+		return 0.0
+	}
+	mcc := ((cm.TP * cm.TN) - (cm.FP * cm.FN)) / math.Sqrt(denom)
+	return mcc
 }
