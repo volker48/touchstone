@@ -43,7 +43,7 @@ func TestConfusionMatrix_F1Score(t *testing.T) {
 			cm.Update(y, yHat)
 
 		}
-		f1 := cm.F1Score()
+		f1 := cm.FScore(1.0)
 		assert.True(t, f1 == ct.out, "Expected %f actual %f precision %f, recall %f TP %f FP %f TN %f FN %f", ct.out, f1, cm.Precision(), cm.Recall(), cm.TP, cm.FP, cm.TN, cm.FN)
 	}
 

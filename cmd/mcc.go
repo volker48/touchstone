@@ -39,7 +39,7 @@ var mccCmd = &cobra.Command{
 		readFiles(args, cm.Update)
 		log.Printf("Total samples: %d", cm.Total)
 		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d",
-			int(cm.TP), int(cm.FP), int(cm.TN), int(cm.FN))
+			cm.TP, cm.FP, cm.TN, cm.FN)
 		log.Printf("Matthews correlation coefficient: %f", cm.MCC())
 	},
 }

@@ -20,34 +20,25 @@ import (
 	"log"
 )
 
-
+var beta float64
 
 // f1Cmd represents the f1 command
 var f1Cmd = &cobra.Command{
-	Use:   "f1",
-	Short: "Calculates F1 score",
+	Use:   "fscore",
+	Short: "Calculates F score",
 	Long: `Example usage:
-	./touchstone f1 y.txt yHat.txt`,
+	./touchstone f y.txt yHat.txt`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cm := &metrics.ConfusionMatrix{}
 		readFiles(args, cm.Update)
 		log.Printf("Total samples: %d", cm.Total)
-		log.Printf("Confusion Matrix TP: %f, FP: %f, TN: %f, FN: %f", cm.TP, cm.FP, cm.TN, cm.FN)
-		log.Printf("F1 score: %f", cm.F1Score())
+		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d", cm.TP, cm.FP, cm.TN, cm.FN)
+		log.Printf("F score beta %f: %f", beta, cm.FScore(beta))
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(f1Cmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// f1Cmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// f1Cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
+	f1Cmd.Flags().Float64VarP(&beta, "beta", "b", 1.0, "Beta parameter to use when calculating the F score. Defaults to 1.0")
 }
