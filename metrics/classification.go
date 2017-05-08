@@ -17,10 +17,10 @@ package metrics
 import "math"
 
 type ConfusionMatrix struct {
-	TP    float64
-	FP    float64
-	TN    float64
-	FN    float64
+	TP    int64
+	FP    int64
+	TN    int64
+	FN    int64
 	Total int64
 }
 
@@ -35,41 +35,42 @@ func (cm *ConfusionMatrix) Update(y, yHat int64) {
 	case 0:
 		switch yHat {
 		case 0:
-			cm.TN += 1.0
+			cm.TN += 1
 		case 1:
-			cm.FP += 1.0
+			cm.FP += 1
 		}
 	case 1:
 		switch yHat {
 		case 0:
-			cm.FN += 1.0
+			cm.FN += 1
 		case 1:
-			cm.TP += 1.0
+			cm.TP += 1
 		}
 
 	}
 	cm.Total++
 }
 
-func (cm *ConfusionMatrix) F1Score() float64 {
+func (cm *ConfusionMatrix) FScore(beta float64) float64 {
 	p := cm.Precision()
 	r := cm.Recall()
-	f1 := 2 * (p * r / (p + r))
+	betaSquared := beta * beta
+	f1 := (1 + betaSquared) * (p * r / ((betaSquared * p) + r))
 	return f1
 }
 
 func (cm *ConfusionMatrix) Precision() float64 {
-	return cm.TP / (cm.TP + cm.FP)
+	return float64(cm.TP) / float64(cm.TP + cm.FP)
 }
 
 func (cm *ConfusionMatrix) Recall() float64 {
-	return cm.TP / (cm.TP + cm.FN)
+	return float64(cm.TP) / float64(cm.TP + cm.FN)
 }
 func (cm *ConfusionMatrix) MCC() float64 {
-	denom := (cm.TP + cm.FP) * (cm.TP + cm.FN) * (cm.TN + cm.FP) * (cm.TN + cm.FN)
+	denom := float64((cm.TP + cm.FP) * (cm.TP + cm.FN) * (cm.TN + cm.FP) * (cm.TN + cm.FN))
 	if denom == 0.0 {
 		return 0.0
 	}
-	mcc := ((cm.TP * cm.TN) - (cm.FP * cm.FN)) / math.Sqrt(denom)
+	mcc := float64((cm.TP * cm.TN) - (cm.FP * cm.FN)) / math.Sqrt(denom)
 	return mcc
 }
