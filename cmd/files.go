@@ -5,6 +5,7 @@ import (
 	"log"
 	"bufio"
 	"strconv"
+	"strings"
 )
 
 func readFiles(args []string, f func(int64, int64)) {
@@ -38,12 +39,14 @@ func readFiles(args []string, f func(int64, int64)) {
 		}
 
 		yText := yScanner.Text()
+		columnsY := strings.SplitN(yText, " ", 1)
 		yHatText := yHatScanner.Text()
-		y, err := strconv.ParseInt(yText, 10, 8)
+		columnsYHat := strings.SplitN(yHatText, " ", 1)
+		y, err := strconv.ParseInt(columnsY[0], 10, 8)
 		if err != nil {
 			log.Fatal("Error parsing int", err)
 		}
-		yHat, err := strconv.ParseInt(yHatText, 10, 8)
+		yHat, err := strconv.ParseInt(columnsYHat[0], 10, 8)
 		if err != nil {
 			log.Fatal("Error parsing int", err)
 		}
