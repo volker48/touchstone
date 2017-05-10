@@ -14,7 +14,11 @@
 
 package metrics
 
-import "math"
+import (
+	"math"
+	"log"
+	"strconv"
+)
 
 type ConfusionMatrix struct {
 	TP    int64
@@ -24,7 +28,15 @@ type ConfusionMatrix struct {
 	Total int64
 }
 
-func (cm *ConfusionMatrix) Update(y, yHat int64) {
+func (cm *ConfusionMatrix) Update(yText, yHatText string) {
+	y, err := strconv.ParseInt(yText, 10, 8)
+	if err != nil {
+		log.Fatal("Error parsing int", err)
+	}
+	yHat, err := strconv.ParseInt(yHatText, 10, 8)
+	if err != nil {
+		log.Fatal("Error parsing int", err)
+	}
 	if y == -1 {
 		y = 0
 	}

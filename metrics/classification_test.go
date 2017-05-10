@@ -20,16 +20,16 @@ import (
 )
 
 var confusiontests = []struct {
-	in  [][]int64
+	in  [][]string
 	out float64
 }{
 	{
-		in: [][]int64{[]int64{1, 1}, []int64{1, 1}, []int64{1, 1}, []int64{1, 1}},
+		in: [][]string{[]string{"1", "1"}, []string{"1", "1"}, []string{"1", "1"}, []string{"1", "1"}},
 		out: 1.0,
 	},
 	{
 
-		in: [][]int64{[]int64{1, 0}, []int64{1, 0}, []int64{1, 1}, []int64{1, 1}},
+		in: [][]string{[]string{"1", "0"}, []string{"1", "0"}, []string{"1", "1"}, []string{"1", "1"}},
 		out: 2.0 / 3.0,
 	},
 }

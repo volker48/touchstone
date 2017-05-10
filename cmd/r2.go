@@ -15,30 +15,30 @@
 package cmd
 
 import (
-	"github.com/volker48/touchstone/metrics"
 	"github.com/spf13/cobra"
+	"github.com/volker48/touchstone/metrics"
 	"log"
 )
 
-var beta float64
-
-// f1Cmd represents the f1 command
-var f1Cmd = &cobra.Command{
-	Use:   "fscore",
-	Short: "Calculates F score",
-	Long: `Example usage:
-	./touchstone f y.txt yHat.txt`,
+// r2Cmd represents the r2 command
+var r2Cmd = &cobra.Command{
+	Use:   "r2 y yhat",
+	Short: "Coefficient of determination",
+	Long: `Calculates the coefficient of determination also known as R^2:
+Expects two files as arguments. A file of actual values as the first argument, and a file of predictions as the second argument.
+The label is expected to be in the first column.
+`,
 	Run: func(cmd *cobra.Command, args []string) {
-		cm := &metrics.ConfusionMatrix{}
-		readFiles(args, cm)
-		log.Printf("Total samples: %d", cm.Total)
-		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d", cm.TP, cm.FP, cm.TN, cm.FN)
-		log.Printf("F score beta %f: %f", beta, cm.FScore(beta))
+		residuals := &metrics.Residuals{}
+		readFiles(args, residuals)
+
+		log.Println("Number of samples: ", residuals.Count)
+		log.Println("Mean y: ", residuals.Sum / float64(residuals.Count))
+		log.Printf("R Squared: %f", residuals.RSquared())
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(f1Cmd)
+	RootCmd.AddCommand(r2Cmd)
 
-	f1Cmd.Flags().Float64VarP(&beta, "beta", "b", 1.0, "Beta parameter to use when calculating the F score. Defaults to 1.0")
 }
