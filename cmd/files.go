@@ -18,11 +18,12 @@ func readFiles(args []string, u Updater) {
 	if err != nil {
 		log.Fatal("You must provide a file for actual values")
 	}
+	defer yFile.Close()
 	yHatFile, err := os.Open(args[1])
 	if err != nil {
 		log.Fatal("You must provide a value with predictions")
 	}
-
+	defer yHatFile.Close()
 	yExt := filepath.Ext(args[0])
 	yHatExt := filepath.Ext(args[1])
 	var yScanner *bufio.Scanner
