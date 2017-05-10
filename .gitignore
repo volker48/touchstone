@@ -4,3 +4,6 @@ y_neg
 yhat_neg
 touchstone
 vendor/
+y.gz
+yhat.gz
+yhat_short

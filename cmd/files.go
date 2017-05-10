@@ -6,6 +6,8 @@ import (
 	"bufio"
 	"strconv"
 	"strings"
+	"compress/gzip"
+	"path/filepath"
 )
 
 func readFiles(args []string, f func(int64, int64)) {
@@ -18,24 +20,56 @@ func readFiles(args []string, f func(int64, int64)) {
 		log.Fatal("You must provide a value with predictions")
 	}
 
-	yScanner := bufio.NewScanner(bufio.NewReader(yFile))
+	yExt := filepath.Ext(args[0])
+	yHatExt := filepath.Ext(args[1])
+	var yScanner *bufio.Scanner
+	var yHatScanner *bufio.Scanner
 
-	yHatScanner := bufio.NewScanner(bufio.NewReader(yHatFile))
+	if yExt == ".gz" {
+		gzr, err := gzip.NewReader(yFile)
+		if err != nil {
+			log.Fatal("Couldn't reader gzip file: ", err)
+		}
+		defer gzr.Close()
+		yScanner = bufio.NewScanner(bufio.NewReader(gzr))
+	} else {
+		yScanner = bufio.NewScanner(bufio.NewReader(yFile))
+	}
+
+	if yHatExt == ".gz" {
+		gzr, err := gzip.NewReader(yHatFile)
+		if err != nil {
+			log.Fatal("Couldn't read gzip file: ", err)
+		}
+		defer gzr.Close()
+		yHatScanner = bufio.NewScanner(bufio.NewReader(gzr))
+	} else {
+		yHatScanner = bufio.NewScanner(bufio.NewReader(yHatFile))
+	}
+
 	for {
 		yScan := yScanner.Scan()
-		if !yScan {
+		yHatScan := yHatScanner.Scan()
+
+		if !yScan || !yHatScan {
 			if yScanner.Err() != nil {
 				log.Fatal("Scanner error", yScanner.Err())
 			}
-			break
-		}
-		yHatScan := yHatScanner.Scan()
-		if !yHatScan {
 			if yHatScanner.Err() != nil {
 				log.Fatal("Scanner error", yHatScanner.Err())
 			}
-			break
 
+			if !yScan && yHatScan {
+
+				log.Fatal("File of actual labels is shorter than file of predictions.")
+			}
+
+			if yScan && !yHatScan {
+
+				log.Fatal("File of predictions is shorter than file of labels.")
+			}
+
+			break
 		}
 
 		yText := yScanner.Text()
