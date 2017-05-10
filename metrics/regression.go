@@ -22,6 +22,10 @@ func (ss *Residuals) RSquared() float64 {
 	return 1.0 - (ss.SS_Res / ssTot)
 }
 
+func (ss *Residuals) MSE() float64 {
+	return ss.SS_Res / float64(ss.Count)
+}
+
 func (ss *Residuals) Update(yText, yHatText string) {
 	y, err := strconv.ParseFloat(yText, 64)
 	if err != nil {
