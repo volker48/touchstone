@@ -77,9 +77,9 @@ func readFiles(args []string, u Updater) {
 		}
 
 		yText := yScanner.Text()
-		columnsY := strings.SplitN(yText, " ", 1)
+		columnsY := strings.SplitN(yText, " ", 2)
 		yHatText := yHatScanner.Text()
-		columnsYHat := strings.SplitN(yHatText, " ", 1)
+		columnsYHat := strings.SplitN(yHatText, " ", 2)
 
 		u.Update(columnsY[0], columnsYHat[0])
 	}
