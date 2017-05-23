@@ -79,10 +79,11 @@ func (cm *ConfusionMatrix) Recall() float64 {
 	return float64(cm.TP) / float64(cm.TP + cm.FN)
 }
 func (cm *ConfusionMatrix) MCC() float64 {
-	denom := float64((cm.TP + cm.FP) * (cm.TP + cm.FN) * (cm.TN + cm.FP) * (cm.TN + cm.FN))
+	denom := float64((cm.TP + cm.FP)) * float64((cm.TP + cm.FN)) * float64((cm.TN + cm.FP)) * float64((cm.TN + cm.FN))
 	if denom == 0.0 {
 		return 0.0
 	}
-	mcc := float64((cm.TP * cm.TN) - (cm.FP * cm.FN)) / math.Sqrt(denom)
+	numerator := (float64((cm.TP * cm.TN)) - float64((cm.FP * cm.FN)))
+	mcc :=  numerator / math.Sqrt(denom)
 	return mcc
 }

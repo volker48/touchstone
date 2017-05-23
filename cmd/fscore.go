@@ -34,6 +34,7 @@ var f1Cmd = &cobra.Command{
 		log.Printf("Total samples: %d", cm.Total)
 		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d", cm.TP, cm.FP, cm.TN, cm.FN)
 		log.Printf("F score beta %f: %f", beta, cm.FScore(beta))
+		log.Printf("Matthews correlation coefficient: %f", cm.MCC())
 	},
 }
 
