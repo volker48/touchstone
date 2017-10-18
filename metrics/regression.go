@@ -1,8 +1,8 @@
 package metrics
 
 import (
-	"strconv"
 	"log"
+	"strconv"
 )
 
 type Residuals struct {

@@ -15,19 +15,20 @@
 package cmd
 
 import (
-	"github.com/volker48/touchstone/metrics"
 	"github.com/spf13/cobra"
+	"github.com/volker48/touchstone/metrics"
 	"log"
 )
 
 var beta float64
+var threshold float64
 
 // f1Cmd represents the f1 command
 var f1Cmd = &cobra.Command{
 	Use:   "fscore",
 	Short: "Calculates F score",
 	Long: `Example usage:
-	./touchstone f y.txt yHat.txt`,
+	./touchstone fscore y.txt yHat.txt --beta=2.0 --threshold=0.5`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cm := &metrics.ConfusionMatrix{}
 		readFiles(args, cm)
@@ -40,6 +41,6 @@ var f1Cmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(f1Cmd)
-
 	f1Cmd.Flags().Float64VarP(&beta, "beta", "b", 1.0, "Beta parameter to use when calculating the F score. Defaults to 1.0")
+	f1Cmd.Flags().Float64VarP(&threshold,"threshold", "t", -1.0, "Classification threshold when values in y are probabilities. If set to -1.0 (default), values in y are assumed to be binary.")
 }

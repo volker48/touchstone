@@ -21,28 +21,45 @@ import (
 )
 
 type ConfusionMatrix struct {
-	TP    int64
-	FP    int64
-	TN    int64
-	FN    int64
-	Total int64
+	TP        int64
+	FP        int64
+	TN        int64
+	FN        int64
+	Total     int64
+	threshold float64
 }
 
 func (cm *ConfusionMatrix) Update(yText, yHatText string) {
-	y, err := strconv.ParseInt(yText, 10, 8)
-	if err != nil {
-		log.Fatal("Error parsing int", err)
+	var y int64
+
+	if cm.threshold == -1.0 {
+		y, err := strconv.ParseInt(yText, 10, 8)
+		if err != nil {
+			log.Fatal("Error parsing y value as binary class", err)
+		}
+		if y == -1 {
+			y = 0
+		}
+	} else {
+		yprob, err := strconv.ParseFloat(yText, 64)
+		if err != nil {
+			log.Fatal("Error parsing y value as probability", err)
+		}
+		if yprob < cm.threshold {
+			y = 0
+		} else {
+			y = 1
+		}
 	}
+
 	yHat, err := strconv.ParseInt(yHatText, 10, 8)
 	if err != nil {
-		log.Fatal("Error parsing int", err)
-	}
-	if y == -1 {
-		y = 0
+		log.Fatal("Error parsing y hat", err)
 	}
 	if yHat == -1 {
 		yHat = 0
 	}
+
 	switch y {
 	case 0:
 		switch yHat {
@@ -58,7 +75,6 @@ func (cm *ConfusionMatrix) Update(yText, yHatText string) {
 		case 1:
 			cm.TP += 1
 		}
-
 	}
 	cm.Total++
 }
@@ -72,18 +88,19 @@ func (cm *ConfusionMatrix) FScore(beta float64) float64 {
 }
 
 func (cm *ConfusionMatrix) Precision() float64 {
-	return float64(cm.TP) / float64(cm.TP + cm.FP)
+	return float64(cm.TP) / float64(cm.TP+cm.FP)
 }
 
 func (cm *ConfusionMatrix) Recall() float64 {
-	return float64(cm.TP) / float64(cm.TP + cm.FN)
+	return float64(cm.TP) / float64(cm.TP+cm.FN)
 }
+
 func (cm *ConfusionMatrix) MCC() float64 {
-	denom := float64(cm.TP + cm.FP) * float64(cm.TP + cm.FN) * float64(cm.TN + cm.FP) * float64(cm.TN + cm.FN)
+	denom := float64(cm.TP+cm.FP) * float64(cm.TP+cm.FN) * float64(cm.TN+cm.FP) * float64(cm.TN+cm.FN)
 	if denom == 0.0 {
 		return 0.0
 	}
-	numerator := float64(cm.TP * cm.TN) - float64(cm.FP * cm.FN)
+	numerator := float64(cm.TP*cm.TN) - float64(cm.FP*cm.FN)
 	mcc := numerator / math.Sqrt(denom)
 	return mcc
 }
