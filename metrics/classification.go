@@ -21,11 +21,12 @@ import (
 )
 
 type ConfusionMatrix struct {
-	TP        int64
-	FP        int64
-	TN        int64
-	FN        int64
-	Total     int64
+	TP    int64
+	FP    int64
+	TN    int64
+	FN    int64
+	Total int64
+	// Properties
 	threshold float64
 }
 
@@ -79,12 +80,20 @@ func (cm *ConfusionMatrix) Update(yText, yHatText string) {
 	cm.Total++
 }
 
-func (cm *ConfusionMatrix) FScore(beta float64) float64 {
-	p := cm.Precision()
-	r := cm.Recall()
-	betaSquared := beta * beta
-	f1 := (1 + betaSquared) * (p * r / ((betaSquared * p) + r))
-	return f1
+func (cm *ConfusionMatrix) TPR() float64 {
+	return float64(cm.TP) / float64(cm.TP+cm.FN)
+}
+
+func (cm *ConfusionMatrix) FPR() float64 {
+	return float64(cm.FP) / float64(cm.FP+cm.TN)
+}
+
+func (cm *ConfusionMatrix) FNR() float64 {
+	return float64(cm.FN) / float64(cm.FN+cm.TP)
+}
+
+func (cm *ConfusionMatrix) TNR() float64 {
+	return float64(cm.TN) / float64(cm.TN+cm.FP)
 }
 
 func (cm *ConfusionMatrix) Precision() float64 {
@@ -95,6 +104,14 @@ func (cm *ConfusionMatrix) Recall() float64 {
 	return float64(cm.TP) / float64(cm.TP+cm.FN)
 }
 
+func (cm *ConfusionMatrix) FScore(beta float64) float64 {
+	p := cm.Precision()
+	r := cm.Recall()
+	betaSquared := beta * beta
+	fbeta := (1 + betaSquared) * (p * r / ((betaSquared * p) + r))
+	return fbeta
+}
+
 func (cm *ConfusionMatrix) MCC() float64 {
 	denom := float64(cm.TP+cm.FP) * float64(cm.TP+cm.FN) * float64(cm.TN+cm.FP) * float64(cm.TN+cm.FN)
 	if denom == 0.0 {
@@ -103,4 +120,11 @@ func (cm *ConfusionMatrix) MCC() float64 {
 	numerator := float64(cm.TP*cm.TN) - float64(cm.FP*cm.FN)
 	mcc := numerator / math.Sqrt(denom)
 	return mcc
+}
+
+func (cm *ConfusionMatrix) YoudenJ() float64 {
+	sensitivity := cm.Recall()
+	specificity := cm.TNR()
+	youdenj := sensitivity + specificity - 1.0
+	return youdenj
 }
