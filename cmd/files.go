@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"os"
-	"log"
 	"bufio"
-	"strings"
 	"compress/gzip"
+	"log"
+	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Updater interface {
