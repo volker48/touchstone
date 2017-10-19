@@ -20,9 +20,6 @@ import (
 	"log"
 )
 
-var beta float64
-var threshold float64
-
 // fscoreCmd represents the fbeta score command
 var fscoreCmd = &cobra.Command{
 	Use:   "fscore",
@@ -35,12 +32,9 @@ var fscoreCmd = &cobra.Command{
 		log.Printf("Total samples: %d", cm.Total)
 		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d", cm.TP, cm.FP, cm.TN, cm.FN)
 		log.Printf("F score beta %f: %f", beta, cm.FScore(beta))
-		log.Printf("Matthews correlation coefficient: %f", cm.MCC())
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(fscoreCmd)
-	fscoreCmd.Flags().Float64VarP(&beta, "beta", "b", 1.0, "Beta parameter to use when calculating the F score. Defaults to 1.0")
-	fscoreCmd.Flags().Float64VarP(&threshold,"threshold", "t", -1.0, "Classification threshold when values in y are probabilities. If set to -1.0 (default), values in y are assumed to be binary.")
+	ClassificationCmd.AddCommand(fscoreCmd)
 }

@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"compress/gzip"
+	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
@@ -11,6 +12,41 @@ import (
 
 type Updater interface {
 	Update(y, yhat string)
+}
+
+type JsonMetrics struct {
+	ID        string
+	TP        int64
+	FP        int64
+	TN        int64
+	FN        int64
+	Total     int64
+	Precision float64
+	Recall    float64
+	F1        float64
+	FBeta     float64
+	Beta      float64
+	MCC       float64
+	YoudenJ   float64
+}
+
+func dumpJson(metrics JsonMetrics, filename string) {
+	jsonBytes, err := json.Marshal(metrics)
+	if err != nil {
+		log.Fatal("Error marshalling JSON: ", err)
+	}
+
+	jsonFile, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0755)
+	if err != nil {
+		log.Fatal("Error opening JSON dump file: ", err)
+	}
+	defer jsonFile.Close()
+
+	if _, err = jsonFile.Write(jsonBytes); err != nil {
+		log.Fatal("Error writing JSON to file: ", err)
+	}
+
+	log.Printf("JSON data written to: %q", filename)
 }
 
 func readFiles(args []string, u Updater) {

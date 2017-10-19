@@ -21,19 +21,18 @@ import (
 )
 
 type ConfusionMatrix struct {
-	TP    int64
-	FP    int64
-	TN    int64
-	FN    int64
-	Total int64
-	// Properties
-	threshold float64
+	TP        int64
+	FP        int64
+	TN        int64
+	FN        int64
+	Total     int64
+	Threshold float64
 }
 
 func (cm *ConfusionMatrix) Update(yText, yHatText string) {
-	var y int64
+	var y int8
 
-	if cm.threshold == -1.0 {
+	if cm.Threshold == -1.0 {
 		y, err := strconv.ParseInt(yText, 10, 8)
 		if err != nil {
 			log.Fatal("Error parsing y value as binary class", err)
@@ -46,7 +45,7 @@ func (cm *ConfusionMatrix) Update(yText, yHatText string) {
 		if err != nil {
 			log.Fatal("Error parsing y value as probability", err)
 		}
-		if yprob < cm.threshold {
+		if yprob < cm.Threshold {
 			y = 0
 		} else {
 			y = 1
