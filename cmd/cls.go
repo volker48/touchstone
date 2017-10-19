@@ -23,7 +23,6 @@ import (
 )
 
 var beta float64
-//var jsonFile string
 var threshold float64
 
 // ClassificationCmd represents the fbeta score command
@@ -49,7 +48,7 @@ var ClassificationCmd = &cobra.Command{
 			fileSplit := strings.SplitN(base, ".", 2)
 			id := fileSplit[0]
 			jsonMetrics := JsonMetrics{
-				id,cm.TP, cm.FP, cm.TN, cm.FN, cm.Total,
+				id, cm.TP, cm.FP, cm.TN, cm.FN, cm.Total,
 				precision, recall, f1, fbeta, beta,
 				mcc, youdenj,
 			}
@@ -69,7 +68,6 @@ var ClassificationCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(ClassificationCmd)
-	//ClassificationCmd.PersistentFlags().StringVarP(&jsonFile, "json", "j", "", "Dump metrics to JSON file.")
 	ClassificationCmd.PersistentFlags().Float64VarP(&beta, "beta", "b", 1.0, "Beta parameter to use when calculating the F score. Defaults to 1.0")
 	ClassificationCmd.PersistentFlags().Float64VarP(&threshold, "threshold", "t", -1.0, "Classification threshold when values in y are probabilities. If set to -1.0 (default), values in y are assumed to be binary.")
 }

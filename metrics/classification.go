@@ -30,7 +30,7 @@ type ConfusionMatrix struct {
 }
 
 func (cm *ConfusionMatrix) Update(yText, yHatText string) {
-	var y int8
+	var y int64
 
 	if cm.Threshold == -1.0 {
 		y, err := strconv.ParseInt(yText, 10, 8)
