@@ -37,7 +37,7 @@ var confusiontests = []struct {
 func TestConfusionMatrix_F1Score(t *testing.T) {
 	for _, ct := range confusiontests {
 		cm := &ConfusionMatrix{}
-		cm.Threshold = -100.0
+		cm.Threshold = -1.0
 		for i := 0; i < len(ct.in); i++ {
 			y := ct.in[i][0]
 			yHat := ct.in[i][1]
