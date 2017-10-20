@@ -32,7 +32,7 @@ var fscoreCmd = &cobra.Command{
 		readFiles(args, cm)
 		log.Printf("Total samples: %d", cm.Total)
 		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d", cm.TP, cm.FP, cm.TN, cm.FN)
-		log.Printf("F score beta %f: %f", beta, cm.FScore(beta))
+		log.Printf("F score beta %.1f: %f", beta, cm.FScore(beta))
 	},
 }
 
