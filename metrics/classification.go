@@ -30,35 +30,37 @@ type ConfusionMatrix struct {
 }
 
 func (cm *ConfusionMatrix) Update(yText, yHatText string) {
-	var y int64
+	var yHat int64
+
+	y, err := strconv.ParseInt(yHatText, 10, 8)
+	if err != nil {
+		log.Fatal("Error parsing y: ", err)
+	}
+	if y == -1 {
+		y = 0
+	}
 
 	if cm.Threshold == -1.0 {
-		y, err := strconv.ParseInt(yText, 10, 8)
+		yHat, err := strconv.ParseInt(yText, 10, 8)
 		if err != nil {
-			log.Fatal("Error parsing y value as binary class", err)
+			log.Fatal("Error parsing yhat value as binary class: ", err)
 		}
-		if y == -1 {
-			y = 0
+		if yHat == -1 {
+			yHat = 0
 		}
 	} else {
-		yprob, err := strconv.ParseFloat(yText, 64)
+		yHatProb, err := strconv.ParseFloat(yText, 64)
 		if err != nil {
-			log.Fatal("Error parsing y value as probability", err)
+			log.Fatal("Error parsing yhat value as probability: ", err)
 		}
-		if yprob < cm.Threshold {
-			y = 0
+		if yHatProb < cm.Threshold {
+			yHat = 0
 		} else {
-			y = 1
+			yHat = 1
 		}
 	}
 
-	yHat, err := strconv.ParseInt(yHatText, 10, 8)
-	if err != nil {
-		log.Fatal("Error parsing y hat", err)
-	}
-	if yHat == -1 {
-		yHat = 0
-	}
+
 
 	switch y {
 	case 0:
