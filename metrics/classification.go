@@ -21,12 +21,12 @@ import (
 )
 
 type ConfusionMatrix struct {
-	TP        int64
-	FP        int64
-	TN        int64
-	FN        int64
-	Total     int64
-	Threshold float64
+	TP        int64   `json:"TP"`
+	FP        int64   `json:"FP"`
+	TN        int64   `json:"TN"`
+	FN        int64   `json:"FN"`
+	Total     int64   `json:"Total"`
+	Threshold float64 `json:"Threshold"`
 }
 
 func (cm *ConfusionMatrix) Update(yText, yHatText string) {

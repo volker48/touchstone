@@ -48,7 +48,7 @@ var ClassificationCmd = &cobra.Command{
 			fileSplit := strings.SplitN(base, ".", 2)
 			id := fileSplit[0]
 			jsonMetrics := JsonMetrics{
-				id, cm.TP, cm.FP, cm.TN, cm.FN, cm.Total,
+				cm, id,
 				precision, recall, f1, fbeta, beta,
 				mcc, youdenj,
 			}

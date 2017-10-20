@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"compress/gzip"
 	"encoding/json"
+	"github.com/volker48/touchstone/metrics"
 	"log"
 	"os"
 	"path/filepath"
@@ -15,19 +16,15 @@ type Updater interface {
 }
 
 type JsonMetrics struct {
-	ID        string
-	TP        int64
-	FP        int64
-	TN        int64
-	FN        int64
-	Total     int64
-	Precision float64
-	Recall    float64
-	F1        float64
-	FBeta     float64
-	Beta      float64
-	MCC       float64
-	YoudenJ   float64
+	*metrics.ConfusionMatrix
+	ID        string  `json:"ID"`
+	Precision float64 `json:"Precision,omitempty"`
+	Recall    float64 `json:"Recall,omitempty"`
+	F1        float64 `json:"F1,omitempty"`
+	FBeta     float64 `json:"FBeta,omitempty"`
+	Beta      float64 `json:"Beta,omitempty"`
+	MCC       float64 `json:"MCC,omitempty"`
+	YoudenJ   float64 `json:"YoudenJ,omitempty"`
 }
 
 func dumpJson(metrics JsonMetrics, filename string) {
