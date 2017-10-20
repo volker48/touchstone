@@ -69,5 +69,5 @@ var ClassificationCmd = &cobra.Command{
 func init() {
 	RootCmd.AddCommand(ClassificationCmd)
 	ClassificationCmd.PersistentFlags().Float64VarP(&beta, "beta", "b", 1.0, "Beta parameter to use when calculating the F score. Defaults to 1.0")
-	ClassificationCmd.PersistentFlags().Float64VarP(&threshold, "threshold", "t", -1.0, "Classification threshold when values in y are probabilities. If set to -1.0 (default), values in y are assumed to be binary.")
+	ClassificationCmd.PersistentFlags().Float64VarP(&threshold, "threshold", "t", -100.0, "Classification threshold when values in y are probabilities. If set to -1.0 (default), values in y are assumed to be binary.")
 }

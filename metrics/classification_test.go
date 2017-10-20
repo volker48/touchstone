@@ -37,6 +37,7 @@ var confusiontests = []struct {
 func TestConfusionMatrix_F1Score(t *testing.T) {
 	for _, ct := range confusiontests {
 		cm := &ConfusionMatrix{}
+		cm.Threshold = -100.0
 		for i := 0; i < len(ct.in); i++ {
 			y := ct.in[i][0]
 			yHat := ct.in[i][1]
@@ -53,12 +54,12 @@ var thresholdtests = []struct {
 	out float64
 }{
 	{
-		in:  [][]string{{"0.5", "1"}, {"0.6", "1"}, {"0.7", "1"}, {"0.9", "1"}},
+		in:  [][]string{{"1", "0.5"}, {"1", "0.6"}, {"1", "0.9"}, {"1", "1.0"}},
 		out: 1.0,
 	},
 	{
 
-		in:  [][]string{{"0.89", "0"}, {"0.5", "0"}, {"1.0", "1"}, {"0.54", "1"}},
+		in:  [][]string{{"1", "0.13"}, {"1", "0.49"}, {"1", "0.89"}, {"1", "0.5"}},
 		out: 2.0 / 3.0,
 	},
 }

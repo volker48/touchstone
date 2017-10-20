@@ -28,6 +28,7 @@ var fscoreCmd = &cobra.Command{
 	./touchstone fscore y.txt yHat.txt --beta=2.0 --threshold=0.5`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cm := &metrics.ConfusionMatrix{}
+		cm.Threshold = threshold
 		readFiles(args, cm)
 		log.Printf("Total samples: %d", cm.Total)
 		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d", cm.TP, cm.FP, cm.TN, cm.FN)
