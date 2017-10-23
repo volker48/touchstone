@@ -3,6 +3,8 @@ package cmd
 import (
 	"bufio"
 	"compress/gzip"
+	"encoding/json"
+	"github.com/volker48/touchstone/metrics"
 	"log"
 	"os"
 	"path/filepath"
@@ -11,6 +13,37 @@ import (
 
 type Updater interface {
 	Update(y, yhat string)
+}
+
+type JsonMetrics struct {
+	*metrics.ConfusionMatrix
+	ID        string  `json:"ID"`
+	Precision float64 `json:"Precision,omitempty"`
+	Recall    float64 `json:"Recall,omitempty"`
+	F1        float64 `json:"F1,omitempty"`
+	FBeta     float64 `json:"FBeta,omitempty"`
+	Beta      float64 `json:"Beta,omitempty"`
+	MCC       float64 `json:"MCC,omitempty"`
+	YoudenJ   float64 `json:"YoudenJ,omitempty"`
+}
+
+func dumpJson(metrics JsonMetrics, filename string) {
+	jsonBytes, err := json.Marshal(metrics)
+	if err != nil {
+		log.Fatal("Error marshalling JSON: ", err)
+	}
+
+	jsonFile, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0755)
+	if err != nil {
+		log.Fatal("Error opening JSON dump file: ", err)
+	}
+	defer jsonFile.Close()
+
+	if _, err = jsonFile.Write(jsonBytes); err != nil {
+		log.Fatal("Error writing JSON to file: ", err)
+	}
+
+	log.Printf("JSON data written to: %q", filename)
 }
 
 func readFiles(args []string, u Updater) {

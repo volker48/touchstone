@@ -36,14 +36,14 @@ var mccCmd = &cobra.Command{
 	−1 indicates total disagreement between prediction and observation.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cm := &metrics.ConfusionMatrix{}
+		cm.Threshold = threshold
 		readFiles(args, cm)
 		log.Printf("Total samples: %d", cm.Total)
-		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d",
-			cm.TP, cm.FP, cm.TN, cm.FN)
+		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d", cm.TP, cm.FP, cm.TN, cm.FN)
 		log.Printf("Matthews correlation coefficient: %f", cm.MCC())
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(mccCmd)
+	ClassificationCmd.AddCommand(mccCmd)
 }
