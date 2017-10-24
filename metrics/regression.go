@@ -6,12 +6,12 @@ import (
 )
 
 type Residuals struct {
-	Res    float64
-	SS_Res float64
-	Sum    float64
-	Count  int64
-	ys     []float64
-	yHats  []float64
+	Sum_Res float64 `json:"SumResiduals"`
+	SS_Res float64 `json:"SquaredSumResiduals"`
+	Sum    float64 `json:"SumY"`
+	Count  int64 `json:"Total"`
+	ys     []float64 `json:"-"`
+	yHats  []float64 `json:"-"`
 }
 
 func (ss *Residuals) RSquared() float64 {
@@ -29,7 +29,7 @@ func (ss *Residuals) MSE() float64 {
 }
 
 func (ss *Residuals) ExplainedVariance() float64 {
-	y_diff_avg := ss.Res / float64(ss.Count)
+	y_diff_avg := ss.Sum_Res / float64(ss.Count)
 	y_true_avg := ss.Sum / float64(ss.Count)
 	var output float64
 	for i, y := range ss.ys {
@@ -56,7 +56,7 @@ func (ss *Residuals) Update(yText, yHatText string) {
 	ss.Count++
 	ss.Sum += y
 	e := y - yHat
-	ss.Res += e
+	ss.Sum_Res += e
 	ss.SS_Res += e * e
 	ss.ys = append(ss.ys, y)
 	ss.yHats = append(ss.yHats, yHat)

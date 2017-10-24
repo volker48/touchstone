@@ -15,7 +15,11 @@ type Updater interface {
 	Update(y, yhat string)
 }
 
-type JsonMetrics struct {
+type JsonMetrics interface {
+	Populate(u *Updater)
+}
+
+type ClsJsonMetrics struct {
 	*metrics.ConfusionMatrix
 	ID        string  `json:"ID"`
 	Precision float64 `json:"Precision,omitempty"`
@@ -27,8 +31,34 @@ type JsonMetrics struct {
 	YoudenJ   float64 `json:"YoudenJ,omitempty"`
 }
 
-func dumpJson(metrics JsonMetrics, filename string) {
-	jsonBytes, err := json.Marshal(metrics)
+type RgrJsonMetrics struct {
+	*metrics.Residuals
+	ID           string  `json:"ID"`
+	MeanY        float64 `json:"MeanY,omitempty"`
+	MSE          float64 `json:"MSE,omitempty"`
+	RSquared     float64 `json:"RSquared,omitempty"`
+	ExplainedVar float64 `json:"ExplainedVariance,omitempty"`
+}
+
+func (cjm *ClsJsonMetrics) Populate(cm *metrics.ConfusionMatrix) {
+	cjm.Precision = cm.Precision()
+	cjm.Recall = cm.Recall()
+	cjm.F1 = cm.FScore(1.0)
+	cjm.FBeta = cm.FScore(beta)
+	cjm.Beta = beta
+	cjm.MCC = cm.MCC()
+	cjm.YoudenJ = cm.YoudenJ()
+}
+
+func (rjm *RgrJsonMetrics) Populate(ss *metrics.Residuals) {
+	rjm.MeanY = ss.Sum / float64(ss.Count)
+	rjm.MSE = ss.MSE()
+	rjm.RSquared = ss.RSquared()
+	rjm.ExplainedVar = ss.ExplainedVariance()
+}
+
+func dumpJson(jm interface{}, filename string) {
+	jsonBytes, err := json.Marshal(jm)
 	if err != nil {
 		log.Fatal("Error marshalling JSON: ", err)
 	}
