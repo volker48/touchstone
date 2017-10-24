@@ -31,6 +31,7 @@ var RegressionCmd = &cobra.Command{
 	./touchstone rgr y.txt yHat.txt -j=ts.json`,
 	Run: func(cmd *cobra.Command, args []string) {
 		residuals := &metrics.Residuals{}
+		residuals.LogTransform = log_transform
 		readFiles(args, residuals)
 
 		rjm := &RgrJsonMetrics{}
@@ -48,7 +49,7 @@ var RegressionCmd = &cobra.Command{
 		log.Printf("Mean y: %f", rjm.MeanY)
 		log.Printf("Mean Squared Error: %f", rjm.MSE)
 		log.Printf("R Squared: %f", rjm.RSquared)
-		log.Printf("Explained Variance: %f", rjm.ExplainedVariance)
+		log.Printf("Explained Variance: %f", rjm.ExplainedVar)
 	},
 }
 

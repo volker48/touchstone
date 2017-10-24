@@ -2,16 +2,18 @@ package metrics
 
 import (
 	"log"
+	"math"
 	"strconv"
 )
 
 type Residuals struct {
-	Sum_Res float64 `json:"SumResiduals"`
-	SS_Res float64 `json:"SquaredSumResiduals"`
-	Sum    float64 `json:"SumY"`
-	Count  int64 `json:"Total"`
-	ys     []float64 `json:"-"`
-	yHats  []float64 `json:"-"`
+	Sum_Res      float64   `json:"SumResiduals"`
+	SS_Res       float64   `json:"SquaredSumResiduals"`
+	Sum          float64   `json:"SumY"`
+	Count        int64     `json:"Total"`
+	LogTransform bool      `json:"LogTransform"`
+	ys           []float64 `json:"-"`
+	yHats        []float64 `json:"-"`
 }
 
 func (ss *Residuals) RSquared() float64 {
@@ -51,6 +53,11 @@ func (ss *Residuals) Update(yText, yHatText string) {
 	yHat, err := strconv.ParseFloat(yHatText, 64)
 	if err != nil {
 		log.Fatal("Error parsing yhat value as float: ", err)
+	}
+
+	if ss.LogTransform {
+		y = math.Exp(y)
+		yHat = math.Exp(yHat)
 	}
 
 	ss.Count++
