@@ -18,8 +18,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/volker48/touchstone/metrics"
 	"log"
-	"path/filepath"
-	"strings"
 )
 
 var log_transform bool
@@ -39,9 +37,7 @@ var RegressionCmd = &cobra.Command{
 		rjm.Populate(residuals)
 
 		if jsonFile != "" {
-			base := filepath.Base(args[1])
-			fileSplit := strings.SplitN(base, ".", 2)
-			rjm.ID = fileSplit[0]
+			rjm.ID = filename2ID(args[1])
 			dumpJson(rjm, jsonFile)
 		}
 

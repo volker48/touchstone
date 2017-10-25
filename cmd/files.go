@@ -76,6 +76,13 @@ func dumpJson(jm interface{}, filename string) {
 	log.Printf("JSON data written to: %q", filename)
 }
 
+func filename2ID(filename string) string {
+	base := filepath.Base(filename)
+	fileSplit := strings.SplitN(base, ".", 2)
+	id := fileSplit[0]
+	return id
+}
+
 func readFiles(args []string, u Updater) {
 	yFile, err := os.Open(args[0])
 	if err != nil {

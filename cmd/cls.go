@@ -18,8 +18,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/volker48/touchstone/metrics"
 	"log"
-	"path/filepath"
-	"strings"
 )
 
 var beta float64
@@ -41,9 +39,7 @@ var ClassificationCmd = &cobra.Command{
 		cjm.Populate(cm)
 
 		if jsonFile != "" {
-			base := filepath.Base(args[1])
-			fileSplit := strings.SplitN(base, ".", 2)
-			cjm.ID = fileSplit[0]
+			cjm.ID = filename2ID(args[1])
 			dumpJson(cjm, jsonFile)
 		}
 
