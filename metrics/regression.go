@@ -48,4 +48,5 @@ func (ss *Residuals) Update(yText, yHatText string) {
 	ss.Sum += y
 	e := y - yHat
 	ss.SSRes += e * e
+	ss.ys = append(ss.ys, y)
 }
