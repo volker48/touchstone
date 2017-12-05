@@ -37,7 +37,6 @@ type RgrJsonMetrics struct {
 	MeanY        float64 `json:"MeanY,omitempty"`
 	MSE          float64 `json:"MSE,omitempty"`
 	RSquared     float64 `json:"RSquared,omitempty"`
-	ExplainedVar float64 `json:"ExplainedVariance,omitempty"`
 }
 
 func (cjm *ClsJsonMetrics) Populate(cm *metrics.ConfusionMatrix) {
@@ -54,7 +53,6 @@ func (rjm *RgrJsonMetrics) Populate(ss *metrics.Residuals) {
 	rjm.MeanY = ss.Sum / float64(ss.Count)
 	rjm.MSE = ss.MSE()
 	rjm.RSquared = ss.RSquared()
-	rjm.ExplainedVar = ss.ExplainedVariance()
 }
 
 func dumpJson(jm interface{}, filename string) {

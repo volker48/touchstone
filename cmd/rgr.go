@@ -20,7 +20,7 @@ import (
 	"log"
 )
 
-var log_transform bool
+var logTransform bool
 
 var RegressionCmd = &cobra.Command{
 	Use:   "rgr",
@@ -29,7 +29,7 @@ var RegressionCmd = &cobra.Command{
 	./touchstone rgr y.txt yHat.txt -j=ts.json`,
 	Run: func(cmd *cobra.Command, args []string) {
 		residuals := &metrics.Residuals{}
-		residuals.LogTransform = log_transform
+		residuals.LogTransform = logTransform
 		readFiles(args, residuals)
 
 		rjm := &RgrJsonMetrics{}
@@ -45,11 +45,10 @@ var RegressionCmd = &cobra.Command{
 		log.Printf("Mean y: %f", rjm.MeanY)
 		log.Printf("Mean Squared Error: %f", rjm.MSE)
 		log.Printf("R Squared: %f", rjm.RSquared)
-		log.Printf("Explained Variance: %f", rjm.ExplainedVar)
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(RegressionCmd)
-	RegressionCmd.PersistentFlags().BoolVarP(&log_transform, "log_transform", "l", false, "Set this flag if true and predicted values are log transformed in order to inverse the transform for metrics calculations.")
+	RegressionCmd.PersistentFlags().BoolVarP(&logTransform, "log_transform", "l", false, "Set this flag if true and predicted values are log transformed in order to inverse the transform for metrics calculations.")
 }
