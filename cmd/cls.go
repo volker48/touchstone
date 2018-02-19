@@ -18,8 +18,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/volker48/touchstone/metrics"
 	"log"
-	"path/filepath"
-	"strings"
 )
 
 var beta float64
@@ -36,33 +34,23 @@ var ClassificationCmd = &cobra.Command{
 		cm.Threshold = threshold
 		readFiles(args, cm)
 
-		precision := cm.Precision()
-		recall := cm.Recall()
-		f1 := cm.FScore(1.0)
-		fbeta := cm.FScore(beta)
-		mcc := cm.MCC()
-		youdenj := cm.YoudenJ()
+		cjm := &ClsJsonMetrics{}
+		cjm.ConfusionMatrix = cm
+		cjm.Populate(cm)
 
 		if jsonFile != "" {
-			base := filepath.Base(args[1])
-			fileSplit := strings.SplitN(base, ".", 2)
-			id := fileSplit[0]
-			jsonMetrics := JsonMetrics{
-				cm, id,
-				precision, recall, f1, fbeta, beta,
-				mcc, youdenj,
-			}
-			dumpJson(jsonMetrics, jsonFile)
+			cjm.ID = filename2ID(args[1])
+			dumpJson(cjm, jsonFile)
 		}
 
 		log.Printf("Total samples: %d", cm.Total)
 		log.Printf("Confusion Matrix TP: %d, FP: %d, TN: %d, FN: %d", cm.TP, cm.FP, cm.TN, cm.FN)
-		log.Printf("Precision: %f", precision)
-		log.Printf("Recall: %f", recall)
-		log.Printf("F1 score : %f", f1)
-		log.Printf("F%.1f score : %f", beta, fbeta)
-		log.Printf("Matthews correlation coefficient: %f", mcc)
-		log.Printf("Youden's J statistic: %f", youdenj)
+		log.Printf("Precision: %f", cjm.Precision)
+		log.Printf("Recall: %f", cjm.Recall)
+		log.Printf("F1 score : %f", cjm.F1)
+		log.Printf("F%.1f score : %f", beta, cjm.FBeta)
+		log.Printf("Matthews correlation coefficient: %f", cjm.MCC)
+		log.Printf("Youden's J statistic: %f", cjm.YoudenJ)
 	},
 }
 
